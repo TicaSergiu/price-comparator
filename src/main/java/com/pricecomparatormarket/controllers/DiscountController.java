@@ -1,5 +1,6 @@
 package com.pricecomparatormarket.controllers;
 
+import com.pricecomparatormarket.models.Discount;
 import com.pricecomparatormarket.models.Product;
 import com.pricecomparatormarket.services.DiscountService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class DiscountController {
     }
 
     @GetMapping("/discount/latest")
-    public List<Product> getLatestDiscount() {
-        return new ArrayList<>();
+    public List<Discount> getLatestDiscount() {
+        return discountService.getLatestDiscounts();
     }
 }

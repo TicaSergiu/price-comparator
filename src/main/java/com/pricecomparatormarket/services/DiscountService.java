@@ -31,11 +31,15 @@ public class DiscountService {
     public List<Product> getBestDiscounts(Optional<Integer> length, Optional<Integer> minDiscount) {
         return discountRepository.getAllAvailableDiscounts()
                                  .stream()
+                                 .filter(discount -> discount.getPercentageDiscount() >= minDiscount.orElse(0))
                                  .sorted(Comparator.comparing(Discount::getPercentageDiscount)
                                                    .reversed())
                                  .limit(length.orElse(10))
-                                 .filter(discount -> discount.getPercentageDiscount() >= minDiscount.orElse(0))
                                  .map(discount -> productRepository.getProductByProductIdAndStore(discount.getProductId(), discount.getStore()))
                                  .toList();
+    }
+
+    public List<Discount> getLatestDiscounts() {
+        return discountRepository.getLatestDiscounts();
     }
 }

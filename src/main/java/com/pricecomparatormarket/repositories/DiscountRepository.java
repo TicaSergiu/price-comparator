@@ -19,4 +19,7 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
 
     @Query(value = "SELECT * FROM discount WHERE from_date<=NOW()::date AND to_date>=NOW()::date", nativeQuery = true)
     List<Discount> getAllAvailableDiscounts();
+
+    @Query(value = "SELECT * FROM discount WHERE from_date<=NOW() AND to_date>=NOW() AND id NOT IN (SELECT id FROM discount WHERE from_date<=NOW()::date-1)", nativeQuery = true)
+    List<Discount> getLatestDiscounts();
 }
