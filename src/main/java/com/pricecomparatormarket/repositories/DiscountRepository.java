@@ -11,7 +11,6 @@ import java.util.List;
 
 @Repository
 public interface DiscountRepository extends JpaRepository<Discount, Integer> {
-    Discount getDiscountByProductId(String productId);
 
     @Query(value = "SELECT * FROM discount WHERE product_id=?1 and from_date<=?2 and to_date>=?2", nativeQuery = true)
     List<Discount> getAllAvailableDiscountsOfProduct(String productId, LocalDate date);

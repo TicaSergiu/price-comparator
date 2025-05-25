@@ -10,6 +10,7 @@ import com.pricecomparatormarket.repositories.ProductRepository;
 import com.pricecomparatormarket.repositories.StoreRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class AlertService {
         }
 
         Alert alert = new Alert();
-        alert.setAlertId("id2");
+        alert.setAlertId("alert2");
         alert.setProductId(productId);
         alert.setStore(store);
         alert.setDiscount(minDiscount);
@@ -60,11 +61,22 @@ public class AlertService {
     public boolean alertUser(String id) {
         Alert alert = alertRepository.getAlertByAlertId(id);
         List<Product> products = productRepository.getProductsByProductId(alert.getProductId());
-        Discount discount = discountRepository.getDiscountByProductId(alert.getProductId());
+        List<Discount> discount = discountRepository.getAllAvailableDiscountsOfProduct(alert.getProductId(),
+                                                                                       LocalDate.now());
 
-        long size = products.stream()
-                            .filter(product -> product.getPrice() <= alert.getPrice() || discount.getPercentageDiscount() >= alert.getDiscount())
-                            .count();
+        List<Integer> discounts = discount.stream().map(Discount::getPercentageDiscount).toList();
+
+        long size = products.stream().filter(product -> {
+            if (alert.getPrice() != null) {
+                if (product.getPrice() <= alert.getPrice()) {
+                    return true;
+                }
+            }
+            if (alert.getDiscount() != null && !discounts.isEmpty()) {
+                return discounts.stream().anyMatch(d -> d >= alert.getDiscount());
+            }
+            return false;
+        }).count();
         return size > 0;
     }
 }

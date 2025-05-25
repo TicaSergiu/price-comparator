@@ -18,6 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "SELECT * FROM product WHERE product_id=?1 and store=?2 AND price_date BETWEEN (SELECT price_date from product where product_id=?1 AND store=?2 AND price_date<=?3 ORDER BY price_date DESC LIMIT 1) AND ?4 ORDER BY price_date ", nativeQuery = true)
     List<Product> getProductHistoryByStore(String productId, Integer store, LocalDate from, LocalDate to);
 
-    @Query(value = "SELECT * FROM product p WHERE store=?1 AND price_date BETWEEN(SELECT price_date FROM product WHERE p.id=id AND store=?1 AND p.price_date<=?3 ORDER BY price_date DESC LIMIT 1) AND ?4 ORDER BY price_date", nativeQuery = true)
+    @Query(value = "SELECT * FROM product p WHERE store=?1 AND price_date BETWEEN(SELECT price_date FROM product WHERE p.id=id AND store=?1 AND p.price_date<=?2 ORDER BY price_date DESC LIMIT 1) AND ?3 ORDER BY price_date", nativeQuery = true)
     List<Product> getProductsHistoryByStore(Integer store, LocalDate from, LocalDate to);
 }
