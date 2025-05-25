@@ -2,7 +2,6 @@ package com.pricecomparatormarket.controllers;
 
 import com.pricecomparatormarket.models.entities.Alert;
 import com.pricecomparatormarket.services.AlertService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +21,13 @@ public class AlertController {
     }
 
     @PostMapping("/alert/create")
-    public ResponseEntity<Alert> createAlert(@RequestParam Map<String, String> value) {
-        Alert alert = alertService.createAlert(value);
-        return ResponseEntity.ok(alert);
+    public Alert createAlert(@RequestParam Map<String, String> value) {
+        return alertService.createAlert(value);
     }
 
     @GetMapping("/alert/check")
     public boolean checkAlert(@RequestParam String id) {
-       return alertService.alertUser(id);
+        return alertService.alertUser(id);
     }
 
 }
