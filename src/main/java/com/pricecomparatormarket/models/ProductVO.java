@@ -22,7 +22,7 @@ public class ProductVO {
         this.store = product.getStore().getStoreName();
         this.price = product.getPrice();
         this.discount = product.getDiscount();
-        this.priceDate = product.getPriceDate();
+        this.priceDate = priceDate;
     }
 
     public ProductVO() {

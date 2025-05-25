@@ -107,6 +107,10 @@ public class PriceHistoryService {
                     ProductVO productForDate = new ProductVO(product, date);
                     applyDiscountIfAvailable(productForDate);
 
+                    if (date.isAfter(LocalDate.now())) {
+                        continue;
+                    }
+
                     productsByDateAndStore.computeIfAbsent(date, k -> new HashMap<>())
                                           .put(productForDate.getStore(), productForDate);
                 }
@@ -154,6 +158,9 @@ public class PriceHistoryService {
                 for (LocalDate date : relevantDates) {
                     ProductVO productForDate = new ProductVO(product, date);
                     applyDiscountIfAvailable(productForDate);
+                    if (date.isAfter(LocalDate.now())) {
+                        continue;
+                    }
 
                     productsByDateAndStore.computeIfAbsent(date, k -> new HashMap<>())
                                           .put(productForDate.getStore(), productForDate);

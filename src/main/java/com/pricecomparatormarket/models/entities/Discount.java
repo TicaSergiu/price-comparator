@@ -23,7 +23,7 @@ public class Discount {
     @Column(name = "product_id", nullable = false, length = Integer.MAX_VALUE)
     private String productId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
