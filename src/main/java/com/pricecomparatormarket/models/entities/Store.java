@@ -1,4 +1,4 @@
-package com.pricecomparatormarket.models;
+package com.pricecomparatormarket.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,4 +31,20 @@ public class Store {
         this.storeName = storeName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Store store = (Store) o;
+        return id.equals(store.id) && storeName.equals(store.storeName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + storeName.hashCode();
+        return result;
+    }
 }

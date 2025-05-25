@@ -1,9 +1,13 @@
-package com.pricecomparatormarket.models;
+package com.pricecomparatormarket.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
 
@@ -38,11 +42,32 @@ public class Product {
     @Column(name = "currency", nullable = false, length = Integer.MAX_VALUE)
     private String currency;
 
-    @Column(name = "store")
-    private Integer store;
 
-    @Column(name = "price_date", nullable = false)
+    @Column(name = "price_date")
     private LocalDate priceDate;
+
+    @Transient
+    private Integer discount = 0;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "store", nullable = false)
+    private Store store;
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
 
     public Integer getId() {
         return id;
@@ -114,14 +139,6 @@ public class Product {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public Integer getStore() {
-        return store;
-    }
-
-    public void setStore(Integer store) {
-        this.store = store;
     }
 
     public LocalDate getPriceDate() {

@@ -1,8 +1,13 @@
-package com.pricecomparatormarket.models;
+package com.pricecomparatormarket.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -11,14 +16,16 @@ import java.time.LocalDate;
 @Table(name = "discount")
 public class Discount {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "product_id", nullable = false, length = Integer.MAX_VALUE)
     private String productId;
 
-    @Column(name = "store_id")
-    private Integer store;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
 
     @Column(name = "from_date", nullable = false)
     private LocalDate fromDate;
@@ -45,11 +52,11 @@ public class Discount {
         this.productId = productId;
     }
 
-    public Integer getStore() {
+    public Store getStore() {
         return store;
     }
 
-    public void setStore(Integer store) {
+    public void setStore(Store store) {
         this.store = store;
     }
 
