@@ -1,12 +1,11 @@
 package com.pricecomparatormarket.services;
 
-import com.pricecomparatormarket.models.Discount;
-import com.pricecomparatormarket.models.Product;
+import com.pricecomparatormarket.models.entities.Discount;
+import com.pricecomparatormarket.models.entities.Product;
 import com.pricecomparatormarket.repositories.DiscountRepository;
 import com.pricecomparatormarket.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,21 +20,16 @@ public class DiscountService {
         this.productRepository = productRepository;
     }
 
-    /**
-     * Gets the best discounts that are available at the time of interogation
-     *
-     * @param length      the number of elements to be returned, default 10
-     * @param minDiscount minimum percentage of the discount to return
-     * @return List of products that have the discount bigger than minDiscount
-     */
-    public List<Product> getBestDiscounts(Optional<Integer> length, Optional<Integer> minDiscount) {
+    public List<Product> getBestDiscounts(Optional<Integer> minDiscount) {
         return discountRepository.getAllAvailableDiscounts()
                                  .stream()
                                  .filter(discount -> discount.getPercentageDiscount() >= minDiscount.orElse(0))
-                                 .sorted(Comparator.comparing(Discount::getPercentageDiscount)
-                                                   .reversed())
-                                 .limit(length.orElse(10))
-                                 .map(discount -> productRepository.getProductByProductIdAndStore(discount.getProductId(), discount.getStore()))
+                                 .map(discount -> {
+                                     Product prod = productRepository.getProductByProductIdAndStore(
+                                             discount.getProductId(), discount.getStore().getId());
+                                     prod.setDiscount(discount.getPercentageDiscount());
+                                     return prod;
+                                 })
                                  .toList();
     }
 

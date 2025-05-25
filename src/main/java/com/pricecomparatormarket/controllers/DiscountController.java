@@ -1,7 +1,7 @@
 package com.pricecomparatormarket.controllers;
 
-import com.pricecomparatormarket.models.Discount;
-import com.pricecomparatormarket.models.Product;
+import com.pricecomparatormarket.models.entities.Discount;
+import com.pricecomparatormarket.models.entities.Product;
 import com.pricecomparatormarket.services.DiscountService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +22,8 @@ public class DiscountController {
     }
 
     @GetMapping("/discount/best-discounts")
-    public List<Product> getBestDiscounts(@RequestParam Optional<Integer> length, @RequestParam Optional<Integer> minDiscount) {
-        return discountService.getBestDiscounts(length, minDiscount);
+    public List<Product> getBestDiscounts(@RequestParam Optional<Integer> minDiscount) {
+        return discountService.getBestDiscounts(minDiscount);
     }
 
     @GetMapping("/discount/latest")
