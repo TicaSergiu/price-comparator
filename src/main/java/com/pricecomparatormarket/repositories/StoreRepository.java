@@ -1,7 +1,7 @@
 package com.pricecomparatormarket.repositories;
 
-import com.pricecomparatormarket.models.Store;
+import com.pricecomparatormarket.models.entities.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Integer> {
 }
