@@ -1,8 +1,9 @@
 package com.pricecomparatormarket.services;
 
-import com.pricecomparatormarket.models.Discount;
-import com.pricecomparatormarket.models.Product;
 import com.pricecomparatormarket.models.ProductVO;
+import com.pricecomparatormarket.models.entities.Discount;
+import com.pricecomparatormarket.models.entities.Product;
+import com.pricecomparatormarket.models.entities.Store;
 import com.pricecomparatormarket.repositories.DiscountRepository;
 import com.pricecomparatormarket.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class BasketService {
@@ -27,19 +27,17 @@ public class BasketService {
         this.discountRepository = discountRepository;
     }
 
-    public Map<Integer, List<Product>> optimizeBasket(List<ProductVO> basket) {
-        Map<Integer, List<Product>> shoppingLists = new HashMap<>();
+    public Map<Store, List<Product>> optimizeBasket(List<ProductVO> basket) {
+        Map<Store, List<Product>> shoppingLists = new HashMap<>();
         for (ProductVO product : basket) {
             List<Product> products = productRepository.getProductsByProductId(product.getProductId());
             Product cheapest = getCheapestProduct(products, product.getProductId());
-            Integer store = cheapest.getStore();
+            Store store = cheapest.getStore();
             if (shoppingLists.containsKey(store)) {
-                shoppingLists.get(store)
-                             .add(cheapest);
+                shoppingLists.get(store).add(cheapest);
             } else {
                 shoppingLists.put(store, new ArrayList<>());
-                shoppingLists.get(store)
-                             .add(cheapest);
+                shoppingLists.get(store).add(cheapest);
             }
         }
 
@@ -47,27 +45,22 @@ public class BasketService {
     }
 
     private Product getCheapestProduct(List<Product> products, String productId) {
-        Set<Discount> discounts = discountRepository.getAllProductsWithDiscount(productId, LocalDate.now()
-                                                                                                    .minusDays(7));
+        List<Discount> discounts = discountRepository.getAllAvailableDiscountsOfProduct(productId,
+                                                                                        LocalDate.now().minusDays(7));
 
-        return products.stream()
-                       .peek(p -> {
-                           Optional<Discount> discount = Optional.empty();
-                           for (Discount d : discounts) {
-                               if (d.getStore()
-                                    .equals(p.getStore())) {
-                                   discount = Optional.of(d);
-                               }
-                           }
-                           if (discount.isPresent()) {
-                               double price = p.getPrice();
-                               double newPrice = price - (price * discount.get()
-                                                                          .getPercentageDiscount() / 100);
-                               p.setPrice(newPrice);
-                           }
-                       })
-                       .min(Comparator.comparing(Product::getPrice))
-                       .get();
+        return products.stream().peek(p -> {
+            Optional<Discount> discount = Optional.empty();
+            for (Discount d : discounts) {
+                if (d.getStore().equals(p.getStore())) {
+                    discount = Optional.of(d);
+                }
+            }
+            if (discount.isPresent()) {
+                double price = p.getPrice();
+                double newPrice = price - (price * discount.get().getPercentageDiscount() / 100);
+                p.setPrice(newPrice);
+            }
+        }).min(Comparator.comparing(Product::getPrice)).get();
     }
 
 }
